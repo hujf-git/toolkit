@@ -1,0 +1,23 @@
+/antx.properties
+*/*/bpmclasses
+/.idealtest
+.swp
+*.iml
+/*/.iml
+.DS_Store
+/*/.*
+.idea/
+*.bak
+target
+*.class
+.target
+#bpm
+/*/bpmclasses/
+*.log*
+
+# eclipse
+.project
+.classpath
+.settings/
+bpmclasses
+# mac

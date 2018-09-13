@@ -4,7 +4,7 @@ package hujf.toolkit.profiler;
  * @author zhaoyan.hjf
  * @since 2018-09-12
  */
-public final class Profilers {
+public final class ProfilerS {
 
 
 

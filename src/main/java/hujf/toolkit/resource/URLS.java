@@ -1,6 +1,7 @@
 package hujf.toolkit.resource;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -28,50 +29,39 @@ public final class URLS {
     }
 
     /**
-     * find resources under class root path
-     */
-    public static URL[] findResourcesByClassPath(String... paths) {
-        Set<URL> urls = new HashSet<URL>();
-        for (String path : paths) {
-            URL url = findResourceByClassPath(path);
-            if (url != null) {
-                urls.add(url);
-            }
-        }
-        return urls.toArray(new URL[urls.size()]);
-
-    }
-
-    /**
      * find resource under class root path
      */
-    public static URL findResourceByClassPath(String path) {
+    public static List<URL> findResourceByClassPath(String path) throws IOException {
         if (path == null) {
-            return null;
+            return new ArrayList<URL>();
         }
 
         // 首先试着从当前线程的ClassLoader中查找。
-        URL url = findResourceWithContextClassLoader(path);
-        if (url != null) {
-            return url;
+        List<URL> urls = findResourceWithContextClassLoader(path);
+        if (!urls.isEmpty()) {
+            return urls;
         }
 
         // 如果没找到，试着从装入自己的ClassLoader中查找。
-        url = findResourceWithSelfClassLoader(path);
-        if (url != null) {
-            return url;
+        urls = findResourceWithSelfClassLoader(path);
+        if (!urls.isEmpty()) {
+            return urls;
         }
 
         // 最后的尝试: 在系统ClassLoader中查找(JDK1.2以上)，
         // 或者在JDK的内部ClassLoader中查找(JDK1.2以下)。
-        return ClassLoader.getSystemResource(path);
+        return Collections.list(ClassLoader.getSystemResources(path));
     }
 
-    private static URL findResourceWithContextClassLoader(String name) {
-        return Thread.currentThread().getContextClassLoader().getResource(name);
+    private static List<URL> findResourceWithContextClassLoader(String name) throws IOException {
+        return Collections.list(
+                Thread.currentThread().getContextClassLoader().getResources(name)
+        );
     }
 
-    private static URL findResourceWithSelfClassLoader(String name) {
-        return URLS.class.getClassLoader().getResource(name);
+    private static List<URL> findResourceWithSelfClassLoader(String name) throws IOException {
+        return Collections.list(
+                URLS.class.getClassLoader().getResources(name)
+        );
     }
 }
